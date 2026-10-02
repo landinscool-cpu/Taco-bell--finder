@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
 <meta charset="UTF-8">
 
 <meta name="viewport"
@@ -13,15 +15,19 @@
 
 <title>Taco Bell Finder</title>
 
+
 <style>
 
 * {
     box-sizing: border-box;
+
     -webkit-tap-highlight-color: transparent;
 }
 
+
 html,
 body {
+
     margin: 0;
     padding: 0;
 
@@ -40,47 +46,62 @@ body {
         sans-serif;
 }
 
+
 body {
+
     min-height: 100vh;
 
     display: flex;
+
     justify-content: center;
     align-items: center;
 
     overflow-x: hidden;
 }
 
+
 .app {
+
     width: 100%;
     max-width: 430px;
 
     min-height: 100vh;
 
+    padding:
+        30px
+        24px
+        40px;
+
     display: flex;
+
     flex-direction: column;
 
     align-items: center;
+
     justify-content: center;
 
-    padding:
-        env(safe-area-inset-top)
-        24px
-        env(safe-area-inset-bottom)
-        24px;
+    cursor: pointer;
 }
 
+
 .title {
+
     margin-bottom: 22px;
 
     color: #dcb4ff;
 
     font-size: 17px;
+
     font-weight: 800;
 
     letter-spacing: 3px;
+
+    text-align: center;
 }
 
+
 .dial {
+
     width: 270px;
     height: 270px;
 
@@ -91,12 +112,19 @@ body {
     border: 4px solid #8b20ff;
 
     box-shadow:
+
         0 0 16px #8b20ff,
-        0 0 45px rgba(139, 32, 255, .45),
-        inset 0 0 35px rgba(139, 32, 255, .30);
+
+        0 0 45px
+        rgba(139,32,255,.45),
+
+        inset 0 0 35px
+        rgba(139,32,255,.30);
 }
 
+
 .dial::before {
+
     content: "";
 
     position: absolute;
@@ -107,57 +135,75 @@ body {
     width: 205px;
     height: 205px;
 
-    transform: translate(-50%, -50%);
+    transform:
+        translate(-50%, -50%);
 
     border-radius: 50%;
 
     border:
         1px solid
-        rgba(220, 180, 255, .45);
+        rgba(220,180,255,.45);
 }
 
+
 .direction {
+
     position: absolute;
 
     color: #dcb4ff;
 
     font-size: 15px;
+
     font-weight: 800;
 }
 
+
 .north {
+
     top: 17px;
+
     left: 50%;
 
     transform:
         translateX(-50%);
 }
+
 
 .south {
+
     bottom: 17px;
+
     left: 50%;
 
     transform:
         translateX(-50%);
 }
 
+
 .west {
+
     left: 19px;
+
     top: 50%;
 
     transform:
         translateY(-50%);
 }
+
 
 .east {
+
     right: 19px;
+
     top: 50%;
 
     transform:
         translateY(-50%);
 }
 
+
 .center {
+
     position: absolute;
 
     left: 50%;
@@ -177,35 +223,45 @@ body {
         0 0 18px #8b20ff;
 }
 
+
 .distance {
+
     margin-top: 27px;
 
     color: white;
 
     font-size: 48px;
+
     line-height: 1;
 
     font-weight: 900;
 
     text-shadow:
         0 0 18px
-        rgba(139, 32, 255, .8);
+        rgba(139,32,255,.8);
 }
 
+
 .name {
+
     margin-top: 12px;
 
-    max-width: 330px;
+    max-width: 340px;
 
     color: #dcb4ff;
 
-    font-size: 20px;
+    font-size: 19px;
+
     font-weight: 800;
+
+    line-height: 1.3;
 
     text-align: center;
 }
 
+
 .status {
+
     margin-top: 8px;
 
     min-height: 20px;
@@ -217,14 +273,15 @@ body {
     text-align: center;
 }
 
-button {
+
+.refresh {
+
     margin-top: 24px;
 
     padding: 12px 24px;
 
     border:
-        1px solid
-        #8b20ff;
+        1px solid #8b20ff;
 
     border-radius: 12px;
 
@@ -233,6 +290,7 @@ button {
     color: white;
 
     font-size: 15px;
+
     font-weight: 700;
 
     cursor: pointer;
@@ -240,85 +298,159 @@ button {
     touch-action: manipulation;
 }
 
-button:active {
+
+.refresh:active {
+
     transform: scale(.97);
 }
 
-button:disabled {
+
+.refresh:disabled {
+
     opacity: .5;
+
 }
 
+
 </style>
+
 </head>
+
 
 <body>
 
-<div class="app">
+
+<div class="app" id="app">
+
 
     <div class="title">
+
         TACO BELL FINDER
+
     </div>
+
 
     <div class="dial">
 
-        <div class="direction north">N</div>
-        <div class="direction east">E</div>
-        <div class="direction south">S</div>
-        <div class="direction west">W</div>
+        <div class="direction north">
+            N
+        </div>
+
+        <div class="direction east">
+            E
+        </div>
+
+        <div class="direction south">
+            S
+        </div>
+
+        <div class="direction west">
+            W
+        </div>
 
         <div class="center"></div>
 
     </div>
 
+
     <div
         id="distance"
         class="distance">
+
         —
+
     </div>
+
 
     <div
         id="name"
         class="name">
+
         Finding Taco Bell...
+
     </div>
+
 
     <div
         id="status"
         class="status">
+
         Waiting for location
+
     </div>
+
 
     <button
         id="refresh"
+        class="refresh"
         type="button">
+
         Refresh
+
     </button>
+
 
 </div>
 
+
 <script>
+
+
+/* =====================================================
+   IMPORTANT
+   =====================================================
+
+   PUT YOUR CLOUDFLARE WORKER URL HERE.
+
+   Example:
+
+   const WORKER_URL =
+       "https://taco-bell-finder.example.workers.dev";
+
+   DO NOT include:
+
+   ?latitude=...
+   ?longitude=...
+
+   The app adds those automatically.
+   ===================================================== */
+
+
+const WORKER_URL =
+    "https://tacobellfinder.landins-cool.workers.dev";
+
+
+/* Page elements */
 
 const distanceElement =
     document.getElementById("distance");
 
+
 const nameElement =
     document.getElementById("name");
 
+
 const statusElement =
     document.getElementById("status");
+
 
 const refreshButton =
     document.getElementById("refresh");
 
 
+const app =
+    document.getElementById("app");
+
+
+/* Current Taco Bell */
+
 let currentStore = null;
 
 
-/*
-    Distance between two GPS coordinates.
+/* =====================================================
+   DISTANCE CALCULATION
+   ===================================================== */
 
-    Result is miles.
-*/
 function distanceMiles(
     lat1,
     lon1,
@@ -326,18 +458,22 @@ function distanceMiles(
     lon2
 ) {
 
-    const earthRadiusMiles =
+    const earthRadius =
         3958.7613;
+
 
     const dLat =
         (lat2 - lat1) *
         Math.PI / 180;
 
+
     const dLon =
         (lon2 - lon1) *
         Math.PI / 180;
 
+
     const a =
+
         Math.sin(dLat / 2) *
         Math.sin(dLat / 2)
 
@@ -345,14 +481,19 @@ function distanceMiles(
 
         Math.cos(
             lat1 * Math.PI / 180
-        ) *
+        )
+
+        *
 
         Math.cos(
             lat2 * Math.PI / 180
-        ) *
+        )
+
+        *
 
         Math.sin(dLon / 2) *
         Math.sin(dLon / 2);
+
 
     const c =
         2 *
@@ -361,18 +502,20 @@ function distanceMiles(
             Math.sqrt(1 - a)
         );
 
-    return earthRadiusMiles * c;
+
+    return earthRadius * c;
 
 }
 
 
-/*
-    Get the user's current GPS location.
-*/
-function getCurrentLocation() {
+/* =====================================================
+   GET GPS LOCATION
+   ===================================================== */
+
+function getLocation() {
 
     return new Promise(
-        (resolve, reject) => {
+        function(resolve, reject) {
 
             if (
                 !navigator.geolocation
@@ -380,11 +523,12 @@ function getCurrentLocation() {
 
                 reject(
                     new Error(
-                        "GPS is not supported by this browser."
+                        "This browser does not support GPS."
                     )
                 );
 
                 return;
+
             }
 
 
@@ -395,11 +539,13 @@ function getCurrentLocation() {
                 reject,
 
                 {
+
                     enableHighAccuracy: true,
 
                     timeout: 20000,
 
                     maximumAge: 60000
+
                 }
 
             );
@@ -410,23 +556,24 @@ function getCurrentLocation() {
 }
 
 
-/*
-    Find the nearest Taco Bell.
+/* =====================================================
+   FIND NEAREST TACO BELL
+   ===================================================== */
 
-    This uses Taco Bell's own
-    location service rather than
-    Overpass/OpenStreetMap.
-*/
 async function findTacoBell() {
 
-    refreshButton.disabled = true;
+
+    refreshButton.disabled =
+        true;
 
 
     distanceElement.textContent =
         "—";
 
+
     nameElement.textContent =
         "Getting your location...";
+
 
     statusElement.textContent =
         "Allow location access";
@@ -434,88 +581,118 @@ async function findTacoBell() {
 
     try {
 
+
+        /* Get GPS */
+
         const position =
-            await getCurrentLocation();
+            await getLocation();
 
 
         const userLatitude =
             position.coords.latitude;
 
+
         const userLongitude =
             position.coords.longitude;
 
 
+        /* Make sure Worker URL exists */
+
+        if (
+            !WORKER_URL ||
+            WORKER_URL.includes(
+                "PASTE-YOUR"
+            )
+        ) {
+
+            throw new Error(
+                "You haven't pasted your Cloudflare Worker URL into the code yet."
+            );
+
+        }
+
+
+        /* Status */
+
         nameElement.textContent =
             "Finding Taco Bell...";
+
 
         statusElement.textContent =
             "Searching Taco Bell locations";
 
 
-        /*
-            Taco Bell's store locator
-            endpoint.
+        /* =================================================
+           THIS IS WHERE YOUR WORKER GETS CALLED
+           ================================================= */
 
-            The service accepts the
-            user's latitude/longitude.
-        */
-
-        const url =
-            "https://www.tacobell.com/" +
-            "tacobellwebservices/v4/" +
-            "tacobell/stores" +
+        const requestURL =
+            WORKER_URL +
 
             "?latitude=" +
+
             encodeURIComponent(
                 userLatitude
             ) +
 
             "&longitude=" +
+
             encodeURIComponent(
                 userLongitude
             );
 
 
+        /* Ask Cloudflare Worker */
+
         const response =
             await fetch(
-                url,
+                requestURL,
                 {
+
                     method: "GET",
 
                     cache: "no-store",
 
                     headers: {
+
                         "Accept":
                             "application/json"
+
                     }
+
                 }
             );
 
 
-        if (!response.ok) {
+        /* Check HTTP response */
+
+        if (
+            !response.ok
+        ) {
 
             throw new Error(
-                "Taco Bell server returned HTTP " +
+                "Worker returned HTTP " +
                 response.status
             );
 
         }
 
 
+        /* Convert response to JSON */
+
         const data =
             await response.json();
 
 
-        /*
-            Taco Bell's response can contain
-            the stores under nearByStores.
-        */
+        /* Get Taco Bell stores */
 
         const stores =
             Array.isArray(
                 data.nearByStores
             )
+
                 ? data.nearByStores
+
                 : [];
 
 
@@ -524,37 +701,35 @@ async function findTacoBell() {
         ) {
 
             throw new Error(
-                "Taco Bell returned no locations."
+                "Taco Bell returned no stores."
             );
 
         }
 
 
-        let nearest = null;
+        /* =================================================
+           FIND THE CLOSEST STORE OURSELVES
+           ================================================= */
 
-        let nearestDistance =
+        let closestStore =
+            null;
+
+
+        let closestDistance =
             Infinity;
 
-
-        /*
-            Calculate the distance ourselves
-            instead of blindly trusting the
-            API's ordering.
-
-            That guarantees that the first
-            store displayed is the closest
-            one in the returned data.
-        */
 
         for (
             const store
             of stores
         ) {
 
+
             const latitude =
                 Number(
                     store.geoPoint?.latitude
                 );
+
 
             const longitude =
                 Number(
@@ -562,9 +737,20 @@ async function findTacoBell() {
                 );
 
 
+            /* Skip stores without coordinates */
+
             if (
-                !Number.isFinite(latitude) ||
-                !Number.isFinite(longitude)
+
+                !Number.isFinite(
+                    latitude
+                )
+
+                ||
+
+                !Number.isFinite(
+                    longitude
+                )
+
             ) {
 
                 continue;
@@ -572,34 +758,46 @@ async function findTacoBell() {
             }
 
 
-            const d =
+            /* Calculate distance */
+
+            const distance =
                 distanceMiles(
+
                     userLatitude,
+
                     userLongitude,
+
                     latitude,
+
                     longitude
+
                 );
 
 
+            /* Is this the closest? */
+
             if (
-                d < nearestDistance
+                distance <
+                closestDistance
             ) {
 
-                nearestDistance = d;
+                closestDistance =
+                    distance;
 
-                nearest = {
 
-                    latitude,
+                closestStore = {
 
-                    longitude,
+                    latitude:
+                        latitude,
 
-                    distance: d,
+                    longitude:
+                        longitude,
 
-                    storeNumber:
-                        store.storeNumber,
+                    distance:
+                        distance,
 
-                    address:
-                        store.address
+                    store:
+                        store
 
                 };
 
@@ -608,39 +806,47 @@ async function findTacoBell() {
         }
 
 
-        if (!nearest) {
+        /* No usable stores */
+
+        if (
+            !closestStore
+        ) {
 
             throw new Error(
-                "Taco Bell returned locations, but none had usable coordinates."
+                "Taco Bell returned stores, but none had GPS coordinates."
             );
 
         }
 
 
+        /* Save current store */
+
         currentStore =
-            nearest;
+            closestStore;
 
 
-        /*
-            Display distance.
-        */
+        /* Show distance */
 
         distanceElement.textContent =
-            nearest.distance.toFixed(1) +
+
+            closestDistance
+                .toFixed(1)
+
+            +
+
             " mi";
 
 
-        /*
-            Display address rather than
-            relying on a possibly missing
-            store name.
-        */
+        /* Get address */
 
         const address =
-            nearest.address;
+            closestStore.store.address;
 
 
-        if (address) {
+        if (
+            address
+        ) {
+
 
             const addressParts = [
 
@@ -652,16 +858,21 @@ async function findTacoBell() {
 
                 address.zipCode
 
-            ].filter(Boolean);
+            ].filter(
+                Boolean
+            );
 
 
             nameElement.textContent =
                 addressParts.join(", ");
 
+
         } else {
+
 
             nameElement.textContent =
                 "Taco Bell";
+
 
         }
 
@@ -670,15 +881,19 @@ async function findTacoBell() {
             "Nearest Taco Bell";
 
 
-    } catch (error) {
+    }
+
+    catch (error) {
+
 
         console.error(
-            "Taco Bell Finder error:",
+            "Taco Bell Finder:",
             error
         );
 
 
-        currentStore = null;
+        currentStore =
+            null;
 
 
         distanceElement.textContent =
@@ -689,48 +904,16 @@ async function findTacoBell() {
             "Couldn't find Taco Bell";
 
 
-        if (
-            error.name ===
-            "GeolocationPositionError"
-        ) {
+        statusElement.textContent =
+            error.message ||
 
-            if (
-                error.code === 1
-            ) {
+            "Unknown error";
 
-                statusElement.textContent =
-                    "Location permission denied";
 
-            } else if (
-                error.code === 2
-            ) {
+    }
 
-                statusElement.textContent =
-                    "Location unavailable";
+    finally {
 
-            } else if (
-                error.code === 3
-            ) {
-
-                statusElement.textContent =
-                    "Location request timed out";
-
-            } else {
-
-                statusElement.textContent =
-                    "Location error";
-
-            }
-
-        } else {
-
-            statusElement.textContent =
-                error.message ||
-                "Unknown error";
-
-        }
-
-    } finally {
 
         refreshButton.disabled =
             false;
@@ -740,16 +923,16 @@ async function findTacoBell() {
 }
 
 
-/*
-    Open the selected Taco Bell
-    in Google Maps.
+/* =====================================================
+   OPEN GOOGLE MAPS
+   ===================================================== */
 
-    Google Maps handles the actual
-    navigation.
-*/
 function openGoogleMaps() {
 
-    if (!currentStore) {
+
+    if (
+        !currentStore
+    ) {
 
         return;
 
@@ -757,93 +940,111 @@ function openGoogleMaps() {
 
 
     const destination =
+
         currentStore.latitude +
+
         "," +
+
         currentStore.longitude;
 
 
-    const googleMapsURL =
+    const mapsURL =
+
         "https://www.google.com/maps/dir/" +
+
         "?api=1" +
 
         "&destination=" +
+
         encodeURIComponent(
             destination
         );
 
 
     window.location.href =
-        googleMapsURL;
+        mapsURL;
 
 }
 
 
-/*
-    Refresh button.
-*/
+/* =====================================================
+   REFRESH BUTTON
+   ===================================================== */
+
 refreshButton.addEventListener(
+
     "click",
+
     function(event) {
 
+
         event.stopPropagation();
+
 
         findTacoBell();
 
     }
+
 );
 
 
-/*
-    Tapping the main display
-    opens Google Maps.
-*/
-document
-    .querySelector(".app")
-    .addEventListener(
-        "click",
-        function(event) {
+/* =====================================================
+   TAP MAIN SCREEN → GOOGLE MAPS
+   ===================================================== */
 
-            if (
-                event.target ===
-                refreshButton
-            ) {
+app.addEventListener(
 
-                return;
+    "click",
 
-            }
+    function(event) {
 
 
-            if (
-                currentStore
-            ) {
+        if (
+            event.target ===
+            refreshButton
+        ) {
 
-                openGoogleMaps();
-
-            }
+            return;
 
         }
-    );
 
 
-/*
-    Initial search.
-*/
+        if (
+            currentStore
+        ) {
+
+            openGoogleMaps();
+
+        }
+
+    }
+
+);
+
+
+/* =====================================================
+   START
+   ===================================================== */
+
 findTacoBell();
 
 
-/*
-    Recheck every 2 minutes.
+/* =====================================================
+   RECHECK EVERY 2 MINUTES
+   ===================================================== */
 
-    This means if you move and another
-    Taco Bell becomes closer, the display
-    can change.
-*/
 setInterval(
+
     findTacoBell,
+
     120000
+
 );
+
 
 </script>
 
+
 </body>
+
 </html>
