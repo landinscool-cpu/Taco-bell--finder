@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Taco Bell Finder</title>
+
+<style>
+html,body {
+  margin:0;
+  background:#09040F;
+  color:#E7C5FF;
+  font-family:-apple-system,BlinkMacSystemFont,sans-serif;
+  height:100%;
+  overflow:hidden;
+}
+
+body {
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.card {
+  text-align:center;
+  width:100%;
+  max-width:430px;
+}
+
+.dial {
+  width:260px;
+  height:260px;
+  border-radius:50%;
+  margin:auto;
+  position:relative;
+  box-sizing:border-box;
+  border:10px solid #491080;
+  box-shadow:
+    0 0 0 5px #8B20FF,
+    0 0 30px #8B20FF;
+  background:#09040F;
+}
+
+.dial:before {
+  content:"";
+  position:absolute;
+  inset:20px;
+  border-radius:50%;
+  border:3px solid #301052;
+}
+
+.ticks {
+  position:absolute;
+  inset:18px;
+  border-radius:50%;
+  background:repeating-conic-gradient(
+    from 0deg,
+    #8B20FF 0deg 1deg,
+    transparent 1deg 11.25deg
+  );
+}
+
+.inner {
+  position:absolute;
+  inset:58px;
+  border:4px solid #6020A6;
+  border-radius:50%;
+}
+
+.label {
+  position:absolute;
+  font-weight:800;
+  font-size:21px;
+}
+
+.n {
+  top:25px;
+  left:50%;
+  transform:translateX(-50%);
+}
+
+.e {
+  right:25px;
+  top:50%;
+  transform:translateY(-50%);
+}
+
+.s {
+  bottom:25px;
+  left:50%;
+  transform:translateX(-50%);
+}
+
+.w {
+  left:25px;
+  top:50%;
+  transform:translateY(-50%);
+}
+
+.hub {
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:24px;
+  height:24px;
+  border-radius:50%;
+  background:#09040F;
+  border:3px solid #8B20FF;
+  transform:translate(-50%,-50%);
+}
+
+#distance {
+  display:inline-block;
+  margin-top:28px;
+  padding:7px 20px;
+  border:2px solid #8B20FF;
+  border-radius:28px;
+  font-size:29px;
+  font-weight:800;
+}
+
+#name {
+  margin-top:9px;
+  font-size:15px;
+}
+
+#status {
+  margin-top:10px;
+  font-size:13px;
+  opacity:.75;
+}
+
+button {
+  margin-top:14px;
+  background:#8B20FF;
+  color:white;
+  border:0;
+  border-radius:18px;
+  padding:9px 15px;
+  font-weight:700;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+
+  <div class="dial">
+    <div class="ticks"></div>
+    <div class="inner"></div>
+
+    <div class="label n">N</div>
+    <div class="label e">E</div>
+    <div class="label s">S</div>
+    <div class="label w">W</div>
+
+    <div class="hub"></div>
+  </div>
+
+  <div id="distance">Locating...</div>
+
+  <div id="name">
+    Finding nearest Taco Bell...
+  </div>
+
+  <div id="status">
+    Allow location access
+  </div>
+
+  <button onclick="findTacoBell()">
+    Refresh
+  </button>
+
+</div>
+
+<script>
+
+function radians(deg) {
+  return deg * Math.PI / 180;
+}
+
+function distance(lat1,lon1,lat2,lon2) {
+
+  const R = 3958.8;
+
+  const dLat = radians(lat2-lat1);
+  const dLon = radians(lon2-lon1);
+
+  const a =
+    Math.sin(dLat/2)**2 +
+    Math.cos(radians(lat1)) *
+    Math.cos(radians(lat2)) *
+    Math.sin(dLon/2)**2;
+
+  return R * 2 *
+    Math.atan2(
+      Math.sqrt(a),
+      Math.sqrt(1-a)
+    );
+}
+
+async function findTacoBell() {
+
+  const distanceEl =
+    document.getElementById("distance");
+
+  const nameEl =
+    document.getElementById("name");
+
+  const statusEl =
+    document.getElementById("status");
+
+  statusEl.textContent =
+    "Finding nearby Taco Bells...";
+
+  navigator.geolocation.getCurrentPosition(
+
+    async position => {
+
+      const lat =
+        position.coords.latitude;
+
+      const lon =
+        position.coords.longitude;
+
+      const query = `
+        [out:json][timeout:20];
+
+        (
+          node["name"~"Taco Bell",i]
+          (around:30000,${lat},${lon});
+
+          way["name"~"Taco Bell",i]
+          (around:30000,${lat},${lon});
+        );
+
+        out center;
+      `;
+
+      try {
+
+        const response =
+          await fetch(
+            "https://overpass-api.de/api/interpreter",
+            {
+              method:"POST",
+              body:query
+            }
+          );
+
+        const data =
+          await response.json();
+
+        let closest = null;
+        let closestDistance = Infinity;
+
+        for (
+          const place of data.elements
+        ) {
+
+          const tacoLat =
+            place.lat ??
+            place.center?.lat;
+
+          const tacoLon =
+            place.lon ??
+            place.center?.lon;
+
+          if (
+            tacoLat == null ||
+            tacoLon == null
+          ) continue;
+
+          const d =
+            distance(
+              lat,
+              lon,
+              tacoLat,
+              tacoLon
+            );
+
+          if (
+            d < closestDistance
+          ) {
+
+            closestDistance = d;
+
+            closest = {
+              lat:tacoLat,
+              lon:tacoLon,
+              name:
+                place.tags?.name ||
+                "Taco Bell"
+            };
+          }
+        }
+
+        if (!closest) {
+          throw new Error(
+            "No Taco Bell found"
+          );
+        }
+
+        distanceEl.textContent =
+          closestDistance.toFixed(1) +
+          " mi";
+
+        nameEl.textContent =
+          closest.name;
+
+        statusEl.textContent =
+          "Nearest Taco Bell";
+
+        document.body.onclick =
+          event => {
+
+            if (
+              event.target.tagName ===
+              "BUTTON"
+            ) return;
+
+            const maps =
+              "https://www.google.com/maps/dir/?api=1" +
+              "&destination=" +
+              closest.lat +
+              "," +
+              closest.lon;
+
+            window.location.href =
+              maps;
+          };
+
+      } catch(error) {
+
+        distanceEl.textContent = "—";
+
+        nameEl.textContent =
+          "Couldn't find Taco Bell";
+
+        statusEl.textContent =
+          "Tap Refresh to try again";
+      }
+
+    },
+
+    () => {
+
+      distanceEl.textContent = "—";
+
+      nameEl.textContent =
+        "Location unavailable";
+
+      statusEl.textContent =
+        "Allow location access";
+
+    },
+
+    {
+      enableHighAccuracy:true,
+      maximumAge:300000,
+      timeout:15000
+    }
+
+  );
+}
+
+findTacoBell();
+
+setInterval(
+  findTacoBell,
+  300000
+);
+
+</script>
+
+</body>
+</html>
